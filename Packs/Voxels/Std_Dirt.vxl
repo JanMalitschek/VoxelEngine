@@ -1,0 +1,7 @@
+<Voxel>
+    <Textures>
+        <Texture type="top" path="dirt.png" />
+        <Texture type="sides" path="dirt.png" />
+        <Texture type="bottom" path="dirt.png" />
+    </Textures>
+</Voxel>

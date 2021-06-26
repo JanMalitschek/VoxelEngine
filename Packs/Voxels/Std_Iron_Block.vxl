@@ -1,0 +1,7 @@
+<Voxel>
+    <Textures>
+        <Texture type="top" path="iron_block.png" />
+        <Texture type="sides" path="iron_block.png" />
+        <Texture type="bottom" path="iron_block.png" />
+    </Textures>
+</Voxel>

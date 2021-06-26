@@ -1,0 +1,7 @@
+<Voxel>
+    <Textures>
+        <Texture type="top" path="stone.png" />
+        <Texture type="sides" path="stone.png" />
+        <Texture type="bottom" path="stone.png" />
+    </Textures>
+</Voxel>

@@ -1,0 +1,10 @@
+<Voxel>
+    <Textures>
+        <Texture type="top" path="lamp.png" />
+        <Texture type="sides" path="lamp.png" />
+        <Texture type="bottom" path="lamp.png" />
+    </Textures>
+    <Properties>
+        <Property type="illuminationLevel" value="1.0" />
+    </Properties>
+</Voxel>
