@@ -62,5 +62,8 @@ namespace VoxelEngine{
         public float randomOffsetX = 0.0f;
         public float randomOffsetY = 0.0f;
         public float randomOffsetZ = 0.0f;
+
+        public int[] breakSoundHashes;
+        public int[] placeSoundHashes;
     }
 }

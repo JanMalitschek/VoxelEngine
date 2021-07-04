@@ -113,7 +113,7 @@ namespace VoxelEngine{
                                             c.chunkData[cx,cy,cz] = new Chunk.ChunkVoxel{voxelHash = reader.ReadInt32()};
                                         }
                                 c.UpdateChunk();
-                                g.SetActive(false);
+                                // g.SetActive(false);
                             }
                 }
             }

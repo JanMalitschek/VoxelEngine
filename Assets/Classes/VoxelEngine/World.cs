@@ -34,13 +34,14 @@ namespace VoxelEngine{
             int availableUpdates = maxChunkUpdatesPerFrame;
             while(chunkInitQueue.Count > 0 && availableUpdates > 0){
                 Chunk requestedChunk = RequestChunk(chunkInitQueue.Dequeue());
-                requestedChunk.InitChunk();
-                chunkUpdateQueue.Enqueue(requestedChunk);
-                availableUpdates--;
+                if(requestedChunk.state <= Chunk.State.DataOnly){
+                    requestedChunk.InitChunk();
+                    chunkUpdateQueue.Enqueue(requestedChunk);
+                    availableUpdates--;
+                }
             }
             while(chunkUpdateQueue.Count > 0 && availableUpdates > 0){
-                if(chunkUpdateQueue.Peek().state >= Chunk.State.DataOnly)
-                    chunkUpdateQueue.Dequeue().UpdateChunk();
+                chunkUpdateQueue.Dequeue().UpdateChunk();
                 availableUpdates--;
             }
         }   

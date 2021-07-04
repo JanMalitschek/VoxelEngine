@@ -16,4 +16,18 @@
         <Property type="cmRandomOffsetY" value="0.0" />
         <Property type="cmRandomOffsetZ" value="0.05" />
     </Properties>
+    <Sounds>
+        <BreakSounds>
+            <Sound name="stone1" />
+            <Sound name="stone2" />
+            <Sound name="stone3" />
+            <Sound name="stone4" />
+        </BreakSounds>
+        <PlaceSounds>
+            <Sound name="stone1" />
+            <Sound name="stone2" />
+            <Sound name="stone3" />
+            <Sound name="stone4" />
+        </PlaceSounds>
+    </Sounds>
 </Voxel>

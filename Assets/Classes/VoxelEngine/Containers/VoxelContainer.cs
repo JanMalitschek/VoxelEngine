@@ -30,17 +30,14 @@ namespace VoxelEngine{
             MissingVoxel = new Voxel();
             MissingVoxel.VoxelName = "Std_Missing";
             MissingVoxel.partTop = MissingVoxel.partSides = MissingVoxel.partBottom = textureContainer.GetTexture("Std_MissingTexture");
-            foreach(string s in Directory.GetFiles("Packs/Voxels", "*.vxl"))
-            {
+            foreach(string s in Directory.GetFiles("Packs/Voxels", "*.vxl")){
                 Voxel v = new Voxel();
                 v.VoxelName = Path.GetFileNameWithoutExtension(s);
                 XMLAbstraction xml = new XMLAbstraction(string.Empty, s);
                 XMLAbstraction.Node texturesNode = xml.GetNode("//Voxel/Textures");
-                if(texturesNode != null)
-                {
+                if(texturesNode != null){
                     List<XMLAbstraction.Node> textureNodes = texturesNode.GetNodes("*[local-name()='Texture']");
-                    foreach(XMLAbstraction.Node n in textureNodes)
-                    {
+                    foreach(XMLAbstraction.Node n in textureNodes){
                         string type = n.GetAttribute("type");
                         if (type == "top")
                             v.partTop = textureContainer.GetTexture(n.GetAttribute("path"));
@@ -51,11 +48,9 @@ namespace VoxelEngine{
                     }
                 }
                 XMLAbstraction.Node modelsNode = xml.GetNode("//Voxel/Models");
-                if(modelsNode != null)
-                {
+                if(modelsNode != null){
                     List<XMLAbstraction.Node> modelNodes = modelsNode.GetNodes("*[local-name()='Model']");
-                    foreach(XMLAbstraction.Node n in modelNodes)
-                    {
+                    foreach(XMLAbstraction.Node n in modelNodes){
                         string type = n.GetAttribute("type");
                         if (type == "default"){
                             v.hasCustomModel = true;
@@ -64,11 +59,9 @@ namespace VoxelEngine{
                     }
                 }
                 XMLAbstraction.Node propertiesNode = xml.GetNode("//Voxel/Properties");
-                if(propertiesNode != null)
-                {
+                if(propertiesNode != null){
                     List<XMLAbstraction.Node> propertyNodes = propertiesNode.GetNodes("*[local-name()='Property']");
-                    foreach (XMLAbstraction.Node n in propertyNodes)
-                    {
+                    foreach (XMLAbstraction.Node n in propertyNodes){
                         string type = n.GetAttribute("type");
                         if (type == "transparent")
                             v.isTransparent = bool.Parse(n.GetAttribute("value"));
@@ -90,8 +83,25 @@ namespace VoxelEngine{
                             v.randomOffsetZ = float.Parse(n.GetAttribute("value"), NumberStyles.Any, CultureInfo.InvariantCulture);
                     }
                 }
+                XMLAbstraction.Node soundsNode = xml.GetNode("//Voxel/Sounds");
+                if(soundsNode != null){
+                    XMLAbstraction.Node breakSoundsNode = soundsNode.GetNode("*[local-name()='BreakSounds']");
+                    if(breakSoundsNode != null)
+                        v.breakSoundHashes = GetSoundNodes(breakSoundsNode);
+                    XMLAbstraction.Node placeSoundsNode = soundsNode.GetNode("*[local-name()='PlaceSounds']");
+                    if(placeSoundsNode != null)
+                        v.placeSoundHashes = GetSoundNodes(placeSoundsNode);
+                }
                 container.Add(v.nameHash, v);
             }
+        }
+
+        private int[] GetSoundNodes(XMLAbstraction.Node node){
+            List<XMLAbstraction.Node> soundNodes = node.GetNodes("*[local-name()='Sound']");
+            int[] soundHashes = new int[soundNodes.Count];
+            for(int i = 0; i < soundNodes.Count; i++)
+                soundHashes[i] = soundNodes[i].GetAttribute("name").GetHashCode();
+            return soundHashes;
         }
 
         public static bool TryGetVoxel(int hash, out Voxel voxel){

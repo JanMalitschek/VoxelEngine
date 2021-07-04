@@ -7,4 +7,17 @@
     <Properties>
         <Property type="transparent" value="True" />
     </Properties>
+    <Sounds>
+        <BreakSounds>
+            <Sound name="glass1" />
+            <Sound name="glass2" />
+            <Sound name="glass3" />
+        </BreakSounds>
+        <PlaceSounds>
+            <Sound name="stone1" />
+            <Sound name="stone2" />
+            <Sound name="stone3" />
+            <Sound name="stone4" />
+        </PlaceSounds>
+    </Sounds>
 </Voxel>

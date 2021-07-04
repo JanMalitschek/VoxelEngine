@@ -27,10 +27,10 @@ namespace VoxelEngine{
         }
 
         private void Start(){
-            atlas = new TextureAtlas((int)atlasResolution, (int)atlasResolution, 32, Color.black, FilterMode.Point, TextureWrapMode.Clamp, false);
+            atlas = new TextureAtlas((int)atlasResolution, (int)atlasResolution, 16, Color.black, FilterMode.Point, TextureWrapMode.Clamp, false);
 
             TextureAtlas.Part missingTexturePart = null;
-            atlas.PackMissingTexture(32, 32, out missingTexturePart);
+            atlas.PackMissingTexture(16, 16, out missingTexturePart);
             MissingTexture = missingTexturePart;
 
             foreach(string s in Directory.GetFiles(@"Packs\Textures", "*.png")){

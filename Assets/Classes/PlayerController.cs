@@ -70,11 +70,13 @@ public class PlayerController : MonoBehaviour
                 currentSelectedFaceChunk = null;
             }
             if(currentSelectedChunk != null && GetMiningButtonDown()){
+                SoundContainer.PlayMultiGlobalSFX(VoxelContainer.GetVoxel(currentSelectedChunk.GetVoxelHashAtPosition(currentSelectedVoxel.x, currentSelectedVoxel.y, currentSelectedVoxel.z)).breakSoundHashes);
                 Chunk.SetVoxel(currentSelectedChunk, currentSelectedVoxel.x, currentSelectedVoxel.y, currentSelectedVoxel.z, null);
                 currentSelectedChunk.UpdateChunk();
             }
             else if(currentSelectedFaceChunk != null && GetPlacingButtonDown()){
-                Chunk.SetVoxelSafe(currentSelectedFaceChunk, currentSelectedFaceVoxel.x, currentSelectedFaceVoxel.y, currentSelectedFaceVoxel.z, VoxelContainer.GetVoxel("Std_Lamp"));
+                Chunk.SetVoxelSafe(currentSelectedFaceChunk, currentSelectedFaceVoxel.x, currentSelectedFaceVoxel.y, currentSelectedFaceVoxel.z, VoxelContainer.GetVoxel("Std_Iron_Block"));
+                SoundContainer.PlayMultiGlobalSFX(VoxelContainer.GetVoxel("Std_Iron_Block").placeSoundHashes);
                 currentSelectedFaceChunk.UpdateChunk();
             }
         }
@@ -117,7 +119,7 @@ public class PlayerController : MonoBehaviour
         GL.PushMatrix();
         gizmoMaterial.SetPass(0);
         GL.Begin(GL.LINES);
-        GL.Color(Color.white);
+        GL.Color(Color.black);
         
         //Bottom
         GL.Vertex(cornerPoint);

@@ -61,3 +61,6 @@ crashlytics-build.properties
 # Don't need the entire texture pack
 John Smith Legacy 1.17.0 v1
 MSP - 1.16
+
+# Don't need the save data
+Save

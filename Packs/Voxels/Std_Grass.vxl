@@ -4,4 +4,18 @@
         <Texture type="sides" path="grass_side.png" />
         <Texture type="bottom" path="dirt.png" />
     </Textures>
+    <Sounds>
+        <BreakSounds>
+            <Sound name="grass1" />
+            <Sound name="grass2" />
+            <Sound name="grass3" />
+            <Sound name="grass4" />
+        </BreakSounds>
+        <PlaceSounds>
+            <Sound name="grass1" />
+            <Sound name="grass2" />
+            <Sound name="grass3" />
+            <Sound name="grass4" />
+        </PlaceSounds>
+    </Sounds>
 </Voxel>

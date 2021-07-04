@@ -4,4 +4,18 @@
         <Texture type="sides" path="oak_log.png" />
         <Texture type="bottom" path="oak_log_top.png" />
     </Textures>
+    <Sounds>
+        <BreakSounds>
+            <Sound name="wood1" />
+            <Sound name="wood2" />
+            <Sound name="wood3" />
+            <Sound name="wood4" />
+        </BreakSounds>
+        <PlaceSounds>
+            <Sound name="wood1" />
+            <Sound name="wood2" />
+            <Sound name="wood3" />
+            <Sound name="wood4" />
+        </PlaceSounds>
+    </Sounds>
 </Voxel>
