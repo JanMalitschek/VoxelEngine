@@ -1,0 +1,7 @@
+<Voxel>
+    <Textures>
+        <Texture type="top" path="diamond_block.png" />
+        <Texture type="sides" path="diamond_block.png" />
+        <Texture type="bottom" path="diamond_block.png" />
+    </Textures>
+</Voxel>

@@ -8,26 +8,30 @@ namespace VoxelEngine{
     public class Region : MonoBehaviour
     {
         private Chunk[,,] chunksInRegion = new Chunk[4,4,4];
+        public Vector3 worldPosition;
+        public World world;
 
-        public async Task<Chunk> RequestChunk(Vector3Int regionSpaceChunkPos){
+        public Chunk RequestChunk(Vector3Int regionSpaceChunkPos){
             if(AreCoordinatesInBounds(regionSpaceChunkPos)){
-                //Chunk does not exit yet
+                //Chunk does not exist yet
                 if(chunksInRegion[regionSpaceChunkPos.x, regionSpaceChunkPos.y, regionSpaceChunkPos.z] == null){
-                    Vector3 chunkPosition = transform.position + new Vector3(regionSpaceChunkPos.x, regionSpaceChunkPos.y, regionSpaceChunkPos.z) * 16.0f;
+                    Vector3 chunkPosition = worldPosition + new Vector3(regionSpaceChunkPos.x, regionSpaceChunkPos.y, regionSpaceChunkPos.z) * 16.0f;
                     GameObject c = new GameObject($"Chunk_{regionSpaceChunkPos.x}_{regionSpaceChunkPos.y}_{regionSpaceChunkPos.z}", typeof(Chunk));
                     c.transform.position = chunkPosition;
                     c.transform.SetParent(transform);
                     c.GetComponent<MeshRenderer>().sharedMaterial = VoxelContainer.globalDefaultChunkMaterial;
                     Chunk chunk = c.GetComponent<Chunk>();
+                    chunk.worldPosition = chunkPosition;
+                    chunk.region = this;
                     chunksInRegion[regionSpaceChunkPos.x, regionSpaceChunkPos.y, regionSpaceChunkPos.z] = chunk;
-                    chunk.worldPosition = chunksInRegion[regionSpaceChunkPos.x, regionSpaceChunkPos.y, regionSpaceChunkPos.z].transform.position;
-                    Task.Run(() => chunksInRegion[regionSpaceChunkPos.x, regionSpaceChunkPos.y, regionSpaceChunkPos.z].InitChunk());
+                    chunk.discreteWorldPosition = new Vector3Int(Mathf.FloorToInt(chunk.worldPosition.x),
+                                                                 Mathf.FloorToInt(chunk.worldPosition.y),
+                                                                 Mathf.FloorToInt(chunk.worldPosition.z));
                     return chunk;
                 }
                 //Chunk already exists
                 else{
                     Chunk chunk = chunksInRegion[regionSpaceChunkPos.x, regionSpaceChunkPos.y, regionSpaceChunkPos.z];
-                    chunk.gameObject.SetActive(true);
                     return chunk;
                 }
             }

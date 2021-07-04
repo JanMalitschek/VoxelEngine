@@ -65,7 +65,9 @@ namespace VoxelEngine{
                             sum += 1.0f;
                         }
                     }
-            return numSamples == 0 ? 0.0f : (sum / (float)numSamples);
+            float lighting = numSamples == 0 ? 0.0f : (sum / (float)numSamples);
+            float ambientOcclusion = ((4 - numSamples) / 4.0f);
+            return lighting * (1.0f - ambientOcclusion);
         }
         public static void InitializeLighting(Chunk c){
             for(int x = 0; x < 16; x++)

@@ -17,7 +17,9 @@ namespace VoxelEngine{
         private MeshFilter meshFilter;
         private Initializer initializer;
         public Vector3 worldPosition;
+        public Vector3Int discreteWorldPosition;
         private World world;
+        public Region region;
         
         [Header("Neighboring Chunks")]
         public Chunk rightChunk;
@@ -44,13 +46,14 @@ namespace VoxelEngine{
         public LightMode lightMode = LightMode.Smooth;
 
         public enum State{
+            Blank,
             Initializing,
             DataOnly,
             GeneratingMesh,
             Visual,
             PendingUpdate
         }
-        public State state = State.Initializing;
+        public State state = State.Blank;
 
         private void Awake() {
             meshFilter = GetComponent<MeshFilter>();
@@ -60,6 +63,9 @@ namespace VoxelEngine{
 
         private void Update() {
             switch(state){
+                case State.Blank:
+
+                break;
                 case State.Initializing:
 
                 break;
@@ -80,6 +86,11 @@ namespace VoxelEngine{
                         m.SetColors(colors);
                         m.RecalculateBounds();
                         meshFilter.mesh = m;
+                        vertices.Clear();
+                        indices.Clear();
+                        uvs.Clear();
+                        normals.Clear();
+                        colors.Clear();
                     }
                 break;
                 case State.PendingUpdate:
@@ -101,7 +112,14 @@ namespace VoxelEngine{
             // }
         }
 
+        private void OnDestroy() {
+            Destroy(meshFilter.mesh);
+        }
+
         public async Task InitChunk(){
+            if(state >= State.Initializing)
+                return;
+            state = State.Initializing;
             await Task.Run(() => Init(this));
             state = State.DataOnly;
         }
@@ -115,17 +133,8 @@ namespace VoxelEngine{
         }
         private async Task UpdateChunkParallel(Chunk c){
             FindSurroundings();
-            //Wait for all surroundings to be at least in DataOnly
-            await Task.Run(() => {
-                while(!AreSurroundingsDataOnly())
-                    Task.Delay(25);
-            });
             state = State.GeneratingMesh;
-            c.vertices.Clear();
-            c.indices.Clear();
-            c.uvs.Clear();
-            c.normals.Clear();
-            c.colors.Clear();
+            await Task.Run(() => VoxelWorldAPI.ExecuteOperations(c));
             await Task.Run(() => ChunkIllumination.InitializeLighting(c));
             await Task.Run(() => ChunkIllumination.PropagateLighting(c));
             await Task.Run(() => ChunkMeshGeneration.GenerateMesh(c));
@@ -134,10 +143,10 @@ namespace VoxelEngine{
         }
 
         public static void Init(Chunk c){
-            for(int x = 0; x < 16; x++)
-                for(int y = 0; y < 16; y++)
-                    for(int z = 0; z < 16; z++)
-                        c.chunkData[x,y,z] = new ChunkVoxel{voxelHash = 0, illuminationLevel = 0.0f};
+            // for(int x = 0; x < 16; x++)
+            //     for(int y = 0; y < 16; y++)
+            //         for(int z = 0; z < 16; z++)
+            //             c.chunkData[x,y,z] = new ChunkVoxel{voxelHash = 0, illuminationLevel = 0.0f};
             c.initializer.Initialize(c);
             // ChunkIllumination.InitializeLighting(c);
             // ChunkIllumination.PropagateLighting(c);
@@ -174,9 +183,9 @@ namespace VoxelEngine{
             return x >= 0 && x < 16 && y >= 0 && y < 16 && z >= 0 && z < 16;
         }
         public static void ClampCoordinates(ref int x, ref int y, ref int z){
-            x = Mathf.Clamp(x, 0, 16);
-            y = Mathf.Clamp(y, 0, 16);
-            z = Mathf.Clamp(z, 0, 16);
+            x = Mathf.Clamp(x, 0, 15);
+            y = Mathf.Clamp(y, 0, 15);
+            z = Mathf.Clamp(z, 0, 15);
         }
         public int GetVoxelHashAtPosition(int x, int y, int z){
             if(AreCoordinatesInBounds(x, y, z))
@@ -218,6 +227,8 @@ namespace VoxelEngine{
             }
         }
         public static void UpdateNeighboringChunksIfNecessary(Chunk c, int x, int y, int z){
+            if(c.state < State.GeneratingMesh)
+                return;
             if(x <= 0 && c.leftChunk.state >= State.GeneratingMesh) c.leftChunk.UpdateChunk();
             else if(x >= 15 && c.rightChunk.state >= State.GeneratingMesh) c.rightChunk.UpdateChunk();
             if(y <= 0 && c.bottomChunk.state >= State.GeneratingMesh) c.bottomChunk.UpdateChunk();

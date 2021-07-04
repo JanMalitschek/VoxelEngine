@@ -1,0 +1,19 @@
+<Voxel>
+    <Textures>
+        <Texture type="top" path="poppy.png" />
+        <Texture type="sides" path="poppy.png" />
+        <Texture type="bottom" path="poppy.png" />
+    </Textures>
+    <Models>
+        <Model type="default" path="tall_grass.obj" />
+    </Models>
+    <Properties>
+        <Property type="transparent" value="True" />
+        <Property type="cmMinScale" value="0.8" />
+        <Property type="cmMaxScale" value="1.2" />
+        <Property type="cmRandomRotation" value="True" />
+        <Property type="cmRandomOffsetX" value="0.2" />
+        <Property type="cmRandomOffsetY" value="0.0" />
+        <Property type="cmRandomOffsetZ" value="0.2" />
+    </Properties>
+</Voxel>

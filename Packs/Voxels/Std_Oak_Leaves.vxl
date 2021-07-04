@@ -1,0 +1,10 @@
+<Voxel>
+    <Textures>
+        <Texture type="top" path="oak_leaves.png" />
+        <Texture type="sides" path="oak_leaves.png" />
+        <Texture type="bottom" path="oak_leaves.png" />
+    </Textures>
+    <Properties>
+        <Property type="transparent" value="True" />
+    </Properties>
+</Voxel>

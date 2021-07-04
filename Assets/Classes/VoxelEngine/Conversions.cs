@@ -9,6 +9,9 @@ namespace VoxelEngine{
         {
             return ToDiscreteVector(c.worldPosition) + chunkSpace;
         }
+        public static Vector3Int WorldToChunkSpace(Vector3Int worldSpace){
+            return worldSpace - new Vector3Int((worldSpace.x / 16) * 16, (worldSpace.y / 16) * 16, (worldSpace.z / 16) * 16);
+        }
         public static Vector3Int WorldToChunkPosition(Vector3 worldPos)
         {
             return new Vector3Int(Mathf.FloorToInt(worldPos.x / 16.0f), Mathf.FloorToInt(worldPos.y / 16.0f), Mathf.FloorToInt(worldPos.z / 16.0f));

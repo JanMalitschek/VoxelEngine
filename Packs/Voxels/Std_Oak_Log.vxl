@@ -1,0 +1,7 @@
+<Voxel>
+    <Textures>
+        <Texture type="top" path="oak_log_top.png" />
+        <Texture type="sides" path="oak_log.png" />
+        <Texture type="bottom" path="oak_log_top.png" />
+    </Textures>
+</Voxel>

@@ -5,12 +5,11 @@ using UnityEngine;
 namespace VoxelEngine{
     public static class ChunkMeshGeneration
     {
-        public static void InitChunkSeed(Chunk c){
+        public static void InitChunkVoxelSeed(Chunk c, int x, int y, int z){
             Vector3 nonZeroWorldPos = c.worldPosition + Vector3.one;
-            Chunk.random = new Unity.Mathematics.Random((uint)Mathf.Abs(nonZeroWorldPos.x + nonZeroWorldPos.y + nonZeroWorldPos.z));
+            Chunk.random = new Unity.Mathematics.Random((uint)Mathf.Abs(nonZeroWorldPos.x + nonZeroWorldPos.y + nonZeroWorldPos.z) + (uint)(x + y * 16 + z * 256));
         }
         public static void GenerateMesh(Chunk c){
-            InitChunkSeed(c);
             for(int x = 0; x < 16; x++){
                 for(int y = 0; y < 16; y++){
                     for(int z = 0; z < 16; z++){
@@ -141,6 +140,8 @@ namespace VoxelEngine{
                                                 ref List<Vector3> normals,
                                                 ref List<Color> colors){
             if(customModel == null) return;
+
+            InitChunkVoxelSeed(c, x, y, z);
 
             Vector3 center = new Vector3(x, y, z) + new Vector3(0.5f, 0.0f, 0.5f);
 

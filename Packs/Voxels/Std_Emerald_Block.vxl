@@ -1,0 +1,7 @@
+<Voxel>
+    <Textures>
+        <Texture type="top" path="emerald_block.png" />
+        <Texture type="sides" path="emerald_block.png" />
+        <Texture type="bottom" path="emerald_block.png" />
+    </Textures>
+</Voxel>

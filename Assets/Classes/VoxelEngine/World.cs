@@ -13,6 +13,10 @@ namespace VoxelEngine{
         private Queue<Vector3Int> chunkInitQueue = new Queue<Vector3Int>();
         private Queue<Chunk> chunkUpdateQueue = new Queue<Chunk>();
 
+        private void Awake() {
+            VoxelWorldAPI.world = this;
+        }
+
         private void Start() {
             OnCurrentChunkChange();
         }
@@ -30,13 +34,13 @@ namespace VoxelEngine{
             int availableUpdates = maxChunkUpdatesPerFrame;
             while(chunkInitQueue.Count > 0 && availableUpdates > 0){
                 Chunk requestedChunk = RequestChunk(chunkInitQueue.Dequeue());
-                if(requestedChunk.state <= Chunk.State.DataOnly){
-                    chunkUpdateQueue.Enqueue(requestedChunk);
-                    availableUpdates--;
-                }
+                requestedChunk.InitChunk();
+                chunkUpdateQueue.Enqueue(requestedChunk);
+                availableUpdates--;
             }
             while(chunkUpdateQueue.Count > 0 && availableUpdates > 0){
-                chunkUpdateQueue.Dequeue().UpdateChunk();
+                if(chunkUpdateQueue.Peek().state >= Chunk.State.DataOnly)
+                    chunkUpdateQueue.Dequeue().UpdateChunk();
                 availableUpdates--;
             }
         }   
@@ -61,7 +65,7 @@ namespace VoxelEngine{
 
         public Chunk RequestChunk(Vector3Int chunkPos){
             Vector3Int region = ChunkPositionToRegion(chunkPos);
-            return RequestRegion(region).RequestChunk(Region.ChunkToRegionPosition(chunkPos)).Result;
+            return RequestRegion(region).RequestChunk(Region.ChunkToRegionPosition(chunkPos));
         }
         public Region RequestRegion(Vector3Int regionPos){
             if(!loadedRegions.ContainsKey(regionPos)){
@@ -69,6 +73,8 @@ namespace VoxelEngine{
                 r.transform.position = new Vector3(regionPos.x, regionPos.y, regionPos.z) * 64.0f;
                 r.transform.SetParent(transform);
                 Region region = r.GetComponent<Region>();
+                region.worldPosition = r.transform.position;
+                region.world = this;
                 region.LoadFromDisk();
                 loadedRegions.Add(regionPos, region);
                 return region;
