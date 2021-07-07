@@ -34,8 +34,14 @@ public class PlayerController : MonoBehaviour
     private World world;
     private Chunk currentChunk = null;
 
+    [Header("Inventory")]
     public Inventory inventory;
     public Voxel currentBuildingBlock;
+
+    [Header("View Model")]
+    public Transform viewModel;
+    public MeshFilter viewModelFilter;
+    public MeshRenderer viewModelRenderer;
 
     public enum State{
         Idling,
@@ -51,7 +57,7 @@ public class PlayerController : MonoBehaviour
 
         world = FindObjectOfType<VoxelEngine.World>();
 
-        currentBuildingBlock = VoxelContainer.GetVoxel("Std_Iron_Block");
+        SelectBuildingBlock(VoxelContainer.GetVoxel("Std_Iron_Block"));
     }
 
     private void Update() {
@@ -67,6 +73,9 @@ public class PlayerController : MonoBehaviour
 
         if(GetSaveButtonDown())
             world.SaveWorld();
+
+        viewModel.position = transform.position;
+        viewModel.rotation = Quaternion.Lerp(viewModel.rotation, transform.rotation, Time.deltaTime * 40.0f);
 
         switch(state){
             case State.Idling:
@@ -115,6 +124,12 @@ public class PlayerController : MonoBehaviour
                 }
             break;
         }
+    }
+
+    public void SelectBuildingBlock(Voxel v){
+        currentBuildingBlock = v;
+        viewModelRenderer.sharedMaterial = VoxelContainer.globalDefaultChunkMaterial;
+        viewModelFilter.sharedMesh = VoxelThumbnailContainer.GeneratePreviewMesh(v);
     }
 
     #region Gameplay Gizmos

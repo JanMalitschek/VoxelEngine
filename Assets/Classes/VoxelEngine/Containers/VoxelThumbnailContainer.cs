@@ -15,8 +15,7 @@ namespace VoxelEngine{
                 CreateThumbnail(v);
         }
 
-        public void CreateThumbnail(Voxel v){
-            //Construct Voxel Mesh
+        public static Mesh GeneratePreviewMesh(Voxel v){
             List<Vector3> vertices = new List<Vector3>();
             List<int> indices = new List<int>();
             List<Vector2> uvs = new List<Vector2>();
@@ -37,6 +36,12 @@ namespace VoxelEngine{
             mesh.SetUVs(0, uvs);
             mesh.SetNormals(normals);
             mesh.RecalculateBounds();
+            return mesh;
+        }
+
+        public void CreateThumbnail(Voxel v){
+            //Construct Voxel Mesh
+            Mesh mesh = GeneratePreviewMesh(v);
             //Position Camera
             float camDistance = mesh.bounds.size.magnitude;
             thumbnailRenderer.transform.position = -thumbnailRenderer.transform.forward * (camDistance + 2.0f);
@@ -49,6 +54,7 @@ namespace VoxelEngine{
             RenderTexture.active = thumbnailRenderTexture;
             thumbnail.ReadPixels(new Rect(0, 0, thumbnail.width, thumbnail.height), 0, 0);
             thumbnail.Apply();
+            print(v.nameHash);
             thumbnails.Add(v.nameHash, thumbnail);
         }
         private static void GenerateFace(Vector3 forward,

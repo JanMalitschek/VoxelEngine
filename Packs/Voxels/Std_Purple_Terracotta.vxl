@@ -1,0 +1,21 @@
+<Voxel>
+    <Textures>
+        <Texture type="top" path="purple_terracotta.png" />
+        <Texture type="sides" path="purple_terracotta.png" />
+        <Texture type="bottom" path="purple_terracotta.png" />
+    </Textures>
+    <Sounds>
+        <BreakSounds>
+            <Sound name="stone1" />
+            <Sound name="stone2" />
+            <Sound name="stone3" />
+            <Sound name="stone4" />
+        </BreakSounds>
+        <PlaceSounds>
+            <Sound name="stone1" />
+            <Sound name="stone2" />
+            <Sound name="stone3" />
+            <Sound name="stone4" />
+        </PlaceSounds>
+    </Sounds>
+</Voxel>

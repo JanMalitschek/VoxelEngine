@@ -6,6 +6,7 @@
     </Textures>
     <Properties>
         <Property type="transparent" value="True" />
+        <Property type="maintainInnerFaces" value="True" />
     </Properties>
     <Sounds>
         <BreakSounds>

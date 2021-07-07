@@ -13,7 +13,7 @@ namespace VoxelEngine{
         }
 
         public void Select(){
-            player.currentBuildingBlock = voxel;
+            player.SelectBuildingBlock(voxel);
         }
     }
 }
