@@ -104,6 +104,18 @@ namespace VoxelEngine{
             breakVFX.Play();
         }
 
+        public void RegenerateChunks(){
+            foreach(Region r in loadedRegions.Values){
+                for(int x = 0; x < 4; x++)
+                    for(int y = 0; y < 4; y++)
+                        for(int z = 0; z < 4; z++){
+                            Chunk c = r.chunksInRegion[x,y,z];
+                            if(c != null && c.state != Chunk.State.GeneratingMesh && c.state >= Chunk.State.DataOnly)
+                                r.chunksInRegion[x,y,z].UpdateChunk();
+                        }
+            }
+        }
+
         #region Saving and Loading
         public void SaveWorld(){
             foreach(Region r in loadedRegions.Values)

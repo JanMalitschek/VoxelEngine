@@ -54,7 +54,7 @@ namespace VoxelEngine{
             RenderTexture.active = thumbnailRenderTexture;
             thumbnail.ReadPixels(new Rect(0, 0, thumbnail.width, thumbnail.height), 0, 0);
             thumbnail.Apply();
-            print(v.nameHash);
+            print(v.VoxelName);
             thumbnails.Add(v.nameHash, thumbnail);
         }
         private static void GenerateFace(Vector3 forward,
@@ -100,15 +100,11 @@ namespace VoxelEngine{
                                                 ref List<Vector3> normals){
             if(customModel == null) return;
 
-            Vector3 center = new Vector3(0.5f, 0.0f, 0.5f);
-
             int currentIndex = vertices.Count;
 
             List<Vector3> customVertices = customModel.vertices;
-            foreach(Vector3 v in customVertices){
-                Vector4 v4 = new Vector4(v.x, v.y, v.z, 1.0f);
-                vertices.Add(center + new Vector3(v4.x, v4.y, v4.z));
-            }
+            foreach(Vector3 v in customVertices)
+                vertices.Add(v);
 
             List<int> customIndices = customModel.indices;
             foreach(int i in customIndices)

@@ -7,9 +7,10 @@ using System.Threading.Tasks;
 namespace VoxelEngine{
     public class Region : MonoBehaviour
     {
-        private Chunk[,,] chunksInRegion = new Chunk[4,4,4];
+        public Chunk[,,] chunksInRegion = new Chunk[4,4,4];
         public Vector3 worldPosition;
         public World world;
+        public bool modifiedByPlayer = false;
 
         public Chunk RequestChunk(Vector3Int regionSpaceChunkPos){
             if(AreCoordinatesInBounds(regionSpaceChunkPos)){
@@ -71,6 +72,8 @@ namespace VoxelEngine{
 
         #region Saving and Loading
         public void SaveToDisk(){
+            if(!modifiedByPlayer)
+                return;
             using(BinaryWriter writer = new BinaryWriter(File.Open($"./Save/{gameObject.name}.rgn", FileMode.OpenOrCreate))){
                 for(int x = 0; x < 4; x++)
                     for(int y = 0; y < 4; y++)
@@ -106,6 +109,7 @@ namespace VoxelEngine{
                                 chunksInRegion[x, y, z] = g.GetComponent<Chunk>();
                                 Chunk c = chunksInRegion[x,y,z];
                                 c.modifiedByPlayer = true;
+                                this.modifiedByPlayer = true;
                                 chunksInRegion[x, y, z].worldPosition = chunksInRegion[x, y, z].transform.position;
                                 // chunksInRegion[x, y, z].InitChunk();
                                 for(int cx = 0; cx < 16; cx++)

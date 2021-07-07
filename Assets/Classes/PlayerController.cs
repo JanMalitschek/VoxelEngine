@@ -38,6 +38,9 @@ public class PlayerController : MonoBehaviour
     public Inventory inventory;
     public Voxel currentBuildingBlock;
 
+    [Header("Settings")]
+    public SettingsManager settings;
+
     [Header("View Model")]
     public Transform viewModel;
     public MeshFilter viewModelFilter;
@@ -47,7 +50,8 @@ public class PlayerController : MonoBehaviour
         Idling,
         Flying,
         SlowingDown,
-        InInventory
+        InInventory,
+        InSettings
     }
     public State state = State.Idling;
 
@@ -74,9 +78,6 @@ public class PlayerController : MonoBehaviour
         if(GetSaveButtonDown())
             world.SaveWorld();
 
-        viewModel.position = transform.position;
-        viewModel.rotation = Quaternion.Lerp(viewModel.rotation, transform.rotation, Time.deltaTime * 40.0f);
-
         switch(state){
             case State.Idling:
                 Looking();
@@ -86,6 +87,10 @@ public class PlayerController : MonoBehaviour
                 if(GetInventoryButtonDown()){
                     inventory.ShowInventory();
                     state = State.InInventory;
+                }
+                else if(GetSettingsButtonDown()){
+                    settings.ShowSettings();
+                    state = State.InSettings;
                 }
             break;
             case State.Flying:
@@ -99,6 +104,10 @@ public class PlayerController : MonoBehaviour
                 if(GetInventoryButtonDown()){
                     inventory.ShowInventory();
                     state = State.InInventory;
+                }
+                else if(GetSettingsButtonDown()){
+                    settings.ShowSettings();
+                    state = State.InSettings;
                 }
             break;
             case State.SlowingDown:
@@ -114,6 +123,10 @@ public class PlayerController : MonoBehaviour
                     inventory.ShowInventory();
                     state = State.InInventory;
                 }
+                else if(GetSettingsButtonDown()){
+                    settings.ShowSettings();
+                    state = State.InSettings;
+                }
             break;
             case State.InInventory:
                 Decelerate();
@@ -122,8 +135,28 @@ public class PlayerController : MonoBehaviour
                     inventory.ShowInventory(false);
                     state = State.Idling;
                 }
+                else if(GetSettingsButtonDown()){
+                    inventory.ShowInventory(false);
+                    settings.ShowSettings();
+                    state = State.InSettings;
+                }
+            break;
+            case State.InSettings:
+                Decelerate();
+                SlowingDown();
+                if(GetSettingsButtonDown()){
+                    settings.ShowSettings(false);
+                    state = State.Idling;
+                }
+                else if(GetInventoryButtonDown()){
+                    settings.ShowSettings(false);
+                    inventory.ShowInventory();
+                    state = State.InInventory;
+                }
             break;
         }
+        viewModel.position = transform.position;
+        viewModel.rotation = Quaternion.Lerp(viewModel.rotation, transform.rotation, Time.deltaTime * 40.0f);
     }
 
     public void SelectBuildingBlock(Voxel v){
@@ -254,6 +287,13 @@ public class PlayerController : MonoBehaviour
                 r = true;
         return r;
     }
+    bool GetSettingsButtonDown(){
+        bool r = false;
+        if(Keyboard.current != null)
+            if(Keyboard.current.tabKey.wasPressedThisFrame)
+                r = true;
+        return r;
+    }
     #endregion
 
     #region Actions
@@ -299,6 +339,7 @@ public class PlayerController : MonoBehaviour
                 SoundContainer.PlayMultiGlobalSFX(v.breakSoundHashes);
                 Chunk.SetVoxel(currentSelectedChunk, currentSelectedVoxel.x, currentSelectedVoxel.y, currentSelectedVoxel.z, null);
                 currentSelectedChunk.modifiedByPlayer = true;
+                currentSelectedChunk.region.modifiedByPlayer = true;
                 currentSelectedChunk.UpdateChunk();
                 world.PlayBreakVFXAtPosition(v, currentSelectedChunk.transform.position + currentSelectedVoxel + Vector3.one * 0.5f);
             }
@@ -306,6 +347,7 @@ public class PlayerController : MonoBehaviour
                 Chunk.SetVoxelSafe(currentSelectedFaceChunk, currentSelectedFaceVoxel.x, currentSelectedFaceVoxel.y, currentSelectedFaceVoxel.z, currentBuildingBlock);
                 SoundContainer.PlayMultiGlobalSFX(currentBuildingBlock.placeSoundHashes);
                 currentSelectedChunk.modifiedByPlayer = true;
+                currentSelectedChunk.region.modifiedByPlayer = true;
                 currentSelectedFaceChunk.UpdateChunk();
             }
         }

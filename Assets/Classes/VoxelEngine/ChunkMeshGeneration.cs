@@ -93,7 +93,7 @@ namespace VoxelEngine{
             Vector3Int coords = new Vector3Int(x, y, z) + new Vector3Int(Mathf.RoundToInt(forward.x * 1.2f), Mathf.RoundToInt(forward.y * 1.2f), Mathf.RoundToInt(forward.z * 1.2f));
             Vector3Int discreteRight = new Vector3Int(Mathf.RoundToInt(right.x * 1.2f), Mathf.RoundToInt(right.y * 1.2f), Mathf.RoundToInt(right.z * 1.2f));
             Vector3Int discreteUp = new Vector3Int(Mathf.RoundToInt(up.x * 1.2f), Mathf.RoundToInt(up.y * 1.2f), Mathf.RoundToInt(up.z * 1.2f));
-            switch(c.lightMode){
+            switch(Chunk.lightMode){
                 case Chunk.LightMode.Flat:
                     Color lightColor = Color.Lerp(Color.black, Color.white, ChunkIllumination.GetIlluminationLevel(c, coords));
                     colors.Add(lightColor);

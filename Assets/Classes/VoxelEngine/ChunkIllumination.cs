@@ -105,17 +105,20 @@ namespace VoxelEngine{
             }
         }
         public static void PropagateLighting(Chunk c){
-            for(int i = 0; i < Mathf.CeilToInt(1.0f / c.lightLevelLoss); i++){
+            if(Chunk.lightPropagationIterations == 0)
+                return;
+            float lightLevelLoss = 1.0f / Chunk.lightPropagationIterations;
+            for(int i = 0; i < Chunk.lightPropagationIterations; i++){
                 for(int x = 0; x < 16; x++)
                     for(int y = 0; y < 16; y++)
                         for(int z = 0; z < 16; z++){
                             if((c.chunkData[x,y,z].voxelHash == 0 || VoxelContainer.GetVoxel(c.chunkData[x,y,z].voxelHash).isTransparent) && c.chunkData[x,y,z].illuminationLevel > 0.0f){
-                                TransferLighting(c, x + 1, y, z, c.chunkData[x,y,z].illuminationLevel - c.lightLevelLoss);
-                                TransferLighting(c, x - 1, y, z, c.chunkData[x,y,z].illuminationLevel - c.lightLevelLoss);
-                                TransferLighting(c, x, y + 1, z, c.chunkData[x,y,z].illuminationLevel - c.lightLevelLoss);
-                                TransferLighting(c, x, y - 1, z, c.chunkData[x,y,z].illuminationLevel - c.lightLevelLoss);
-                                TransferLighting(c, x, y, z + 1, c.chunkData[x,y,z].illuminationLevel - c.lightLevelLoss);
-                                TransferLighting(c, x, y, z - 1, c.chunkData[x,y,z].illuminationLevel - c.lightLevelLoss);
+                                TransferLighting(c, x + 1, y, z, c.chunkData[x,y,z].illuminationLevel - lightLevelLoss);
+                                TransferLighting(c, x - 1, y, z, c.chunkData[x,y,z].illuminationLevel - lightLevelLoss);
+                                TransferLighting(c, x, y + 1, z, c.chunkData[x,y,z].illuminationLevel - lightLevelLoss);
+                                TransferLighting(c, x, y - 1, z, c.chunkData[x,y,z].illuminationLevel - lightLevelLoss);
+                                TransferLighting(c, x, y, z + 1, c.chunkData[x,y,z].illuminationLevel - lightLevelLoss);
+                                TransferLighting(c, x, y, z - 1, c.chunkData[x,y,z].illuminationLevel - lightLevelLoss);
                             }
                         }
             }

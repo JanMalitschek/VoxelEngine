@@ -39,12 +39,12 @@ namespace VoxelEngine{
 
         [HideInInspector] public static Unity.Mathematics.Random random = new Unity.Mathematics.Random(1234);
 
-        public float lightLevelLoss = 0.3f;
+        public static int lightPropagationIterations = 4;
         public enum LightMode{
             Flat,
             Smooth
         }
-        public LightMode lightMode = LightMode.Smooth;
+        public static LightMode lightMode = LightMode.Smooth;
 
         public enum State{
             Blank,
