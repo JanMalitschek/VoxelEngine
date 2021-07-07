@@ -16,6 +16,10 @@ namespace VoxelEngine{
         {
             return new Vector3Int(Mathf.FloorToInt(worldPos.x / 16.0f), Mathf.FloorToInt(worldPos.y / 16.0f), Mathf.FloorToInt(worldPos.z / 16.0f));
         }
+        public static Vector3Int WorldToRegionPosition(Vector3 worldPos)
+        {
+            return new Vector3Int(Mathf.FloorToInt(worldPos.x / 64.0f), Mathf.FloorToInt(worldPos.y / 64.0f), Mathf.FloorToInt(worldPos.z / 64.0f));
+        }
         public static Vector3 ChunkToWorldPosition(Vector3Int chunkPos)
         {
             return new Vector3(chunkPos.x * 16.0f, chunkPos.y * 16.0f, chunkPos.z * 16.0f);

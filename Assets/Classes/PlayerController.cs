@@ -23,8 +23,6 @@ public class PlayerController : MonoBehaviour
     public float movementSmoothing = 10.0f;
     private Vector3 lastInputVector;
 
-    [Header("Gizmos")]
-    public Material gizmoMaterial;
     private Vector3Int currentSelectedVoxel = Vector3Int.zero;
     private Chunk currentSelectedChunk = null;
     private Chunk currentSelectedFaceChunk = null;
@@ -168,46 +166,7 @@ public class PlayerController : MonoBehaviour
     #region Gameplay Gizmos
     private void OnPostRender() {
         if(currentSelectedChunk != null)
-            DrawBlockSelectionGizmo(currentSelectedVoxel + currentSelectedChunk.transform.position);
-    }
-    private void DrawBlockSelectionGizmo(Vector3 cornerPoint){
-        GL.PushMatrix();
-        gizmoMaterial.SetPass(0);
-        GL.Begin(GL.LINES);
-        GL.Color(Color.black);
-        
-        //Bottom
-        GL.Vertex(cornerPoint);
-        GL.Vertex(cornerPoint + Vector3.right);
-        GL.Vertex(cornerPoint);
-        GL.Vertex(cornerPoint + Vector3.forward);
-        GL.Vertex(cornerPoint + new Vector3(1.0f, 0.0f, 1.0f));
-        GL.Vertex(cornerPoint + Vector3.right);
-        GL.Vertex(cornerPoint + new Vector3(1.0f, 0.0f, 1.0f));
-        GL.Vertex(cornerPoint + Vector3.forward);
-
-        //Top
-        GL.Vertex(cornerPoint + Vector3.up);
-        GL.Vertex(cornerPoint + Vector3.right + Vector3.up);
-        GL.Vertex(cornerPoint + Vector3.up);
-        GL.Vertex(cornerPoint + Vector3.forward + Vector3.up);
-        GL.Vertex(cornerPoint + Vector3.one);
-        GL.Vertex(cornerPoint + Vector3.right + Vector3.up);
-        GL.Vertex(cornerPoint + Vector3.one);
-        GL.Vertex(cornerPoint + Vector3.forward + Vector3.up);
-
-        //Sides
-        GL.Vertex(cornerPoint);
-        GL.Vertex(cornerPoint + Vector3.up);
-        GL.Vertex(cornerPoint + Vector3.right);
-        GL.Vertex(cornerPoint + Vector3.right + Vector3.up);
-        GL.Vertex(cornerPoint + Vector3.forward);
-        GL.Vertex(cornerPoint + Vector3.forward + Vector3.up);
-        GL.Vertex(cornerPoint + new Vector3(1.0f, 0.0f, 1.0f));
-        GL.Vertex(cornerPoint + Vector3.one);
-
-        GL.End();
-        GL.PopMatrix();
+            DebugManager.DrawWireBox(currentSelectedVoxel + currentSelectedChunk.transform.position, Vector3.one, 0.01f);
     }
     #endregion
 
