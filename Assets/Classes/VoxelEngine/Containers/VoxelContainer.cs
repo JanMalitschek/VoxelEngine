@@ -12,8 +12,10 @@ namespace VoxelEngine{
         private ModelContainer modelContainer;
 
         public Material defaultChunkMaterial;
+        public Material defaultParticleMaterial;
         public static Material globalDefaultChunkMaterial;
-        private static Dictionary<int, Voxel> container;
+        public static Material globalDefaultParticleMaterial;
+        public static Dictionary<int, Voxel> container;
         public static Voxel MissingVoxel { get; private set; }
 
         private void Awake() {
@@ -24,7 +26,9 @@ namespace VoxelEngine{
 
         private void Start() {
             globalDefaultChunkMaterial = defaultChunkMaterial;
+            globalDefaultParticleMaterial = defaultParticleMaterial;
             globalDefaultChunkMaterial.SetTexture("_MainTex", textureContainer.atlas.texture);
+            globalDefaultParticleMaterial.SetTexture("_MainTex", textureContainer.atlas.texture);
             container = new Dictionary<int, Voxel>();
             
             MissingVoxel = new Voxel();

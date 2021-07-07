@@ -13,6 +13,8 @@ namespace VoxelEngine{
         private Queue<Vector3Int> chunkInitQueue = new Queue<Vector3Int>();
         private Queue<Chunk> chunkUpdateQueue = new Queue<Chunk>();
 
+        public ParticleSystem breakVFX;
+
         private void Awake() {
             VoxelWorldAPI.world = this;
         }
@@ -34,7 +36,7 @@ namespace VoxelEngine{
             int availableUpdates = maxChunkUpdatesPerFrame;
             while(chunkInitQueue.Count > 0 && availableUpdates > 0){
                 Chunk requestedChunk = RequestChunk(chunkInitQueue.Dequeue());
-                if(requestedChunk.state <= Chunk.State.DataOnly){
+                if(requestedChunk.state <= Chunk.State.DataOnly && !requestedChunk.modifiedByPlayer){
                     requestedChunk.InitChunk();
                     chunkUpdateQueue.Enqueue(requestedChunk);
                     availableUpdates--;
@@ -76,8 +78,8 @@ namespace VoxelEngine{
                 Region region = r.GetComponent<Region>();
                 region.worldPosition = r.transform.position;
                 region.world = this;
-                region.LoadFromDisk();
                 loadedRegions.Add(regionPos, region);
+                region.LoadFromDisk();
                 return region;
             }
             else
@@ -92,6 +94,14 @@ namespace VoxelEngine{
         }
         public Vector3Int WorldPositionToChunk(Vector3 worldPosition){
             return new Vector3Int(Mathf.FloorToInt(worldPosition.x / 16.0f), Mathf.FloorToInt(worldPosition.y / 16.0f), Mathf.FloorToInt(worldPosition.z / 16.0f));
+        }
+
+        public void PlayBreakVFXAtPosition(Voxel v, Vector3 worldPos){
+            breakVFX.startColor = new Color(v.partSides.X / (float)TextureContainer.instance.atlasResolution,
+                                            v.partSides.Y / (float)TextureContainer.instance.atlasResolution,
+                                            v.partSides.UVWidth * 0.2f, v.partSides.UVHeight * 0.2f);
+            breakVFX.transform.position = worldPos;
+            breakVFX.Play();
         }
 
         #region Saving and Loading

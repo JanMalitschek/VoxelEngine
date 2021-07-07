@@ -20,6 +20,7 @@ namespace VoxelEngine{
         public Vector3Int discreteWorldPosition;
         private World world;
         public Region region;
+        public bool modifiedByPlayer = false;
         
         [Header("Neighboring Chunks")]
         public Chunk rightChunk;

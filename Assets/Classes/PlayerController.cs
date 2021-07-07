@@ -34,10 +34,14 @@ public class PlayerController : MonoBehaviour
     private World world;
     private Chunk currentChunk = null;
 
+    public Inventory inventory;
+    public Voxel currentBuildingBlock;
+
     public enum State{
         Idling,
         Flying,
-        SlowingDown
+        SlowingDown,
+        InInventory
     }
     public State state = State.Idling;
 
@@ -46,6 +50,8 @@ public class PlayerController : MonoBehaviour
         Cursor.visible = false;
 
         world = FindObjectOfType<VoxelEngine.World>();
+
+        currentBuildingBlock = VoxelContainer.GetVoxel("Std_Iron_Block");
     }
 
     private void Update() {
@@ -58,28 +64,6 @@ public class PlayerController : MonoBehaviour
             currentChunk = world.GetChunk(chunkPos);
             currentChunkPos = chunkPos;
         }
-        if(currentChunk != null){
-            if(currentChunk.Trace(transform.position, transform.forward, 6.0f, out Chunk.ChunkTraceResult traceHit)){
-                currentSelectedVoxel = traceHit.localVoxel;
-                currentSelectedChunk = traceHit.chunk;
-                currentSelectedFaceChunk = traceHit.hitFaceChunk;
-                currentSelectedFaceVoxel = traceHit.hitFaceVoxel;
-            }
-            else{
-                currentSelectedChunk = null;
-                currentSelectedFaceChunk = null;
-            }
-            if(currentSelectedChunk != null && GetMiningButtonDown()){
-                SoundContainer.PlayMultiGlobalSFX(VoxelContainer.GetVoxel(currentSelectedChunk.GetVoxelHashAtPosition(currentSelectedVoxel.x, currentSelectedVoxel.y, currentSelectedVoxel.z)).breakSoundHashes);
-                Chunk.SetVoxel(currentSelectedChunk, currentSelectedVoxel.x, currentSelectedVoxel.y, currentSelectedVoxel.z, null);
-                currentSelectedChunk.UpdateChunk();
-            }
-            else if(currentSelectedFaceChunk != null && GetPlacingButtonDown()){
-                Chunk.SetVoxelSafe(currentSelectedFaceChunk, currentSelectedFaceVoxel.x, currentSelectedFaceVoxel.y, currentSelectedFaceVoxel.z, VoxelContainer.GetVoxel("Std_Iron_Block"));
-                SoundContainer.PlayMultiGlobalSFX(VoxelContainer.GetVoxel("Std_Iron_Block").placeSoundHashes);
-                currentSelectedFaceChunk.UpdateChunk();
-            }
-        }
 
         if(GetSaveButtonDown())
             world.SaveWorld();
@@ -87,25 +71,48 @@ public class PlayerController : MonoBehaviour
         switch(state){
             case State.Idling:
                 Looking();
+                Mining();
                 if(!IsInputVectorZero())
                     state = State.Flying;
+                if(GetInventoryButtonDown()){
+                    inventory.ShowInventory();
+                    state = State.InInventory;
+                }
             break;
             case State.Flying:
                 Looking();
                 Accelerate();
                 Flying();
+                Mining();
                 lastInputVector = smoothInputVector;
                 if(IsInputVectorZero())
                     state = State.SlowingDown;
+                if(GetInventoryButtonDown()){
+                    inventory.ShowInventory();
+                    state = State.InInventory;
+                }
             break;
             case State.SlowingDown:
                 Looking();
                 Decelerate();
                 SlowingDown();
+                Mining();
                 if(uniformSpeed <= 0.01f)
                     state = State.Idling;
                 else if(!IsInputVectorZero())
                     state = State.Flying;
+                if(GetInventoryButtonDown()){
+                    inventory.ShowInventory();
+                    state = State.InInventory;
+                }
+            break;
+            case State.InInventory:
+                Decelerate();
+                SlowingDown();
+                if(GetInventoryButtonDown()){
+                    inventory.ShowInventory(false);
+                    state = State.Idling;
+                }
             break;
         }
     }
@@ -224,6 +231,14 @@ public class PlayerController : MonoBehaviour
                 r = true;
         return r;
     }
+
+    bool GetInventoryButtonDown(){
+        bool r = false;
+        if(Keyboard.current != null)
+            if(Keyboard.current.eKey.wasPressedThisFrame)
+                r = true;
+        return r;
+    }
     #endregion
 
     #region Actions
@@ -251,6 +266,34 @@ public class PlayerController : MonoBehaviour
     }
     void SlowingDown(){
         transform.Translate(lastInputVector * Time.deltaTime * uniformSpeed * speed, Space.Self);
+    }
+    void Mining(){
+        if(currentChunk != null){
+            if(currentChunk.Trace(transform.position, transform.forward, 6.0f, out Chunk.ChunkTraceResult traceHit)){
+                currentSelectedVoxel = traceHit.localVoxel;
+                currentSelectedChunk = traceHit.chunk;
+                currentSelectedFaceChunk = traceHit.hitFaceChunk;
+                currentSelectedFaceVoxel = traceHit.hitFaceVoxel;
+            }
+            else{
+                currentSelectedChunk = null;
+                currentSelectedFaceChunk = null;
+            }
+            if(currentSelectedChunk != null && GetMiningButtonDown()){
+                Voxel v = VoxelContainer.GetVoxel(currentSelectedChunk.GetVoxelHashAtPosition(currentSelectedVoxel.x, currentSelectedVoxel.y, currentSelectedVoxel.z));
+                SoundContainer.PlayMultiGlobalSFX(v.breakSoundHashes);
+                Chunk.SetVoxel(currentSelectedChunk, currentSelectedVoxel.x, currentSelectedVoxel.y, currentSelectedVoxel.z, null);
+                currentSelectedChunk.modifiedByPlayer = true;
+                currentSelectedChunk.UpdateChunk();
+                world.PlayBreakVFXAtPosition(v, currentSelectedChunk.transform.position + currentSelectedVoxel + Vector3.one * 0.5f);
+            }
+            else if(currentSelectedFaceChunk != null && GetPlacingButtonDown()){
+                Chunk.SetVoxelSafe(currentSelectedFaceChunk, currentSelectedFaceVoxel.x, currentSelectedFaceVoxel.y, currentSelectedFaceVoxel.z, currentBuildingBlock);
+                SoundContainer.PlayMultiGlobalSFX(currentBuildingBlock.placeSoundHashes);
+                currentSelectedChunk.modifiedByPlayer = true;
+                currentSelectedFaceChunk.UpdateChunk();
+            }
+        }
     }
     #endregion
 }

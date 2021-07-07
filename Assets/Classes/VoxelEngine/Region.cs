@@ -75,10 +75,10 @@ namespace VoxelEngine{
                 for(int x = 0; x < 4; x++)
                     for(int y = 0; y < 4; y++)
                         for(int z = 0; z < 4; z++){
-                            if(chunksInRegion[x,y,z] == null)
+                            Chunk c = chunksInRegion[x,y,z];
+                            if(c == null || !c.modifiedByPlayer)
                                 writer.Write(1);
                             else{
-                                Chunk c = chunksInRegion[x,y,z];
                                 for(int cx = 0; cx < 16; cx++)
                                     for(int cy = 0; cy < 16; cy++)
                                         for(int cz = 0; cz < 16; cz++)
@@ -104,8 +104,9 @@ namespace VoxelEngine{
                                 g.transform.SetParent(transform);
                                 g.GetComponent<MeshRenderer>().sharedMaterial = VoxelContainer.globalDefaultChunkMaterial;
                                 chunksInRegion[x, y, z] = g.GetComponent<Chunk>();
-                                chunksInRegion[x, y, z].worldPosition = chunksInRegion[x, y, z].transform.position;
                                 Chunk c = chunksInRegion[x,y,z];
+                                c.modifiedByPlayer = true;
+                                chunksInRegion[x, y, z].worldPosition = chunksInRegion[x, y, z].transform.position;
                                 // chunksInRegion[x, y, z].InitChunk();
                                 for(int cx = 0; cx < 16; cx++)
                                     for(int cy = 0; cy < 16; cy++)
