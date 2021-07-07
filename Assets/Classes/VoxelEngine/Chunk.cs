@@ -15,6 +15,11 @@ namespace VoxelEngine{
         }
         public ChunkVoxel[,,] chunkData = new ChunkVoxel[16,16,16];
         private MeshFilter meshFilter;
+        public Mesh Mesh{
+            get{
+                return meshFilter.sharedMesh;
+            }
+        }
         private Initializer initializer;
         public Vector3 worldPosition;
         public Vector3Int discreteWorldPosition;

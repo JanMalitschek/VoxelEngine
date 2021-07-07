@@ -23,7 +23,6 @@ namespace VoxelEngine{
         }
 
         private void OnPostRenderCallback(Camera cam) {
-                print("Drawing Regions");
             if(showRegions){
                 Vector3 currentRegion = Conversions.WorldToRegionPosition(player.position) * 64;
                 DrawWireBox(currentRegion, Vector3.one * 64.0f);

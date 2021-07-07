@@ -54,7 +54,6 @@ namespace VoxelEngine{
             RenderTexture.active = thumbnailRenderTexture;
             thumbnail.ReadPixels(new Rect(0, 0, thumbnail.width, thumbnail.height), 0, 0);
             thumbnail.Apply();
-            print(v.VoxelName);
             thumbnails.Add(v.nameHash, thumbnail);
         }
         private static void GenerateFace(Vector3 forward,

@@ -5,6 +5,8 @@ using UnityEngine;
 namespace VoxelEngine{
     public class World : MonoBehaviour
     {
+        private static World instance;
+
         public int chunkDistance = 4;
         public int maxChunkUpdatesPerFrame = 8;
         private Vector3Int currentChunk = Vector3Int.zero;
@@ -16,6 +18,7 @@ namespace VoxelEngine{
         public ParticleSystem breakVFX;
 
         private void Awake() {
+            instance = this;
             VoxelWorldAPI.world = this;
         }
 
@@ -84,6 +87,9 @@ namespace VoxelEngine{
             }
             else
                 return loadedRegions[regionPos];
+        }
+        public static Chunk GetCurrentPlayerChunk(){
+            return instance.RequestChunk(instance.currentChunk);
         }
 
         private Vector3Int ToDiscreteVector(Vector3 v){

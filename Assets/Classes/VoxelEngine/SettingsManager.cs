@@ -19,6 +19,10 @@ namespace VoxelEngine{
         public Toggle showRegions;
         public Toggle showChunks;
 
+        [Header("Export")]
+        public Button exportChunkVisualMesh;
+        public Button exportTextureAtlas;
+
         private void Awake() {
             instance = this;
             world = FindObjectOfType<World>();
@@ -27,8 +31,16 @@ namespace VoxelEngine{
         private void Start() {
             smoothLighting.onValueChanged.AddListener(delegate {OnSmoothLightingChange();});
             lightingIterations.onValueChanged.AddListener(delegate {OnLightingIterationsChange();});
+
             showRegions.onValueChanged.AddListener(delegate {OnShowRegionsChange();});
             showChunks.onValueChanged.AddListener(delegate {OnShowChunksChange();});
+
+            exportChunkVisualMesh.onClick.AddListener(delegate {
+                Chunk currentChunk = World.GetCurrentPlayerChunk();
+                ExportManager.ExportMesh(currentChunk.Mesh, $"Chunk_{currentChunk.discreteWorldPosition.x}_{currentChunk.discreteWorldPosition.y}_{currentChunk.discreteWorldPosition.z}");
+            });
+            exportTextureAtlas.onClick.AddListener(delegate {ExportManager.ExportTextureAtlas();});
+
             ShowSettings(false);
         }
 

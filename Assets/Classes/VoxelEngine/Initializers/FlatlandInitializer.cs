@@ -18,11 +18,11 @@ namespace VoxelEngine{
                                  null, null);
                 // Chunk.FillVoxels(chunk, 6, 5, 6, 9, 5, 9, VoxelContainer.GetVoxel("Std_Iron_Block"));
                 VoxelWorldAPI.SetVoxel(chunk.discreteWorldPosition + new Vector3Int(8, 8, 4), VoxelContainer.GetVoxel("Std_Iron_Block"));
-                VoxelWorldAPI.FillMultiVoxelsDistributed(chunk.discreteWorldPosition + new Vector3Int(4, 3, 4),
-                                         chunk.discreteWorldPosition + new Vector3Int(8, 32, 8),
-                                         VoxelContainer.GetVoxel("Std_Iron_Block"),
-                                         VoxelContainer.GetVoxel("Std_Gold_Block"),
-                                         VoxelContainer.GetVoxel("Std_Diamond_Block"));
+                // VoxelWorldAPI.FillMultiVoxelsDistributed(chunk.discreteWorldPosition + new Vector3Int(4, 3, 4),
+                //                          chunk.discreteWorldPosition + new Vector3Int(8, 32, 8),
+                //                          VoxelContainer.GetVoxel("Std_Iron_Block"),
+                //                          VoxelContainer.GetVoxel("Std_Gold_Block"),
+                //                          VoxelContainer.GetVoxel("Std_Diamond_Block"));
             }
             else if(Conversions.GetWorldPosition(chunk).y < 0){
                 Chunk.FillVoxels(chunk, 0, 0, 0, 15, 15, 15, VoxelContainer.GetVoxel("Std_Stone"));
